@@ -4,6 +4,7 @@ const {
   create,
   update,
   deleteById,
+  search,
 } = require("../db/queries");
 
 //Lay ta ca ban ghi
@@ -37,7 +38,13 @@ const getAllUser = async (req, res) => {
 const createNewUser = async (req, res) => {
   const userData = req.body;
 
-  if (!userData.email || !userData.name || !userData.city) {
+  if (
+    !userData.email ||
+    !userData.name ||
+    !userData.city ||
+    !userData.age ||
+    !userData.gender
+  ) {
     return res.status(403).json({ message: "Error with input paramater!!" });
   }
 
@@ -83,10 +90,6 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   const userData = req.body;
 
-  if (!userData.email || !userData.name || !userData.city) {
-    return res.status(403).json({ message: "Error with input paramater!!" });
-  }
-
   if (!userData.id) {
     return res.status(404).json({ message: "Id is requird for update!!!" });
   }
@@ -115,10 +118,23 @@ const deleteUser = async (req, res) => {
   }
 };
 
+//Tim kiem theo nhieu dieu kien cung luc, req body
+const searchByCondition = async (req, res) => {
+  try {
+    const { name, city, age, gender } = req.body;
+    const user = await search({ name, city, age, gender });
+    return res.status(200).json({ user });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error!!" });
+  }
+};
+
 module.exports = {
   getAllUser,
   createNewUser,
   getUserById,
   updateUser,
   deleteUser,
+  searchByCondition,
 };

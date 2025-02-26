@@ -108,4 +108,45 @@ const deleteById = async (id) => {
   }
 };
 
-module.exports = { findAll, findById, create, update, deleteById };
+const search = async ({ name, city, age, gender }) => {
+  let queryString = "SELECT * FROM Users WHERE 1=1";
+  const values = [];
+
+  if (name) {
+    queryString += " AND name LIKE ?";
+    values.push(`%${name}%`);
+  }
+
+  if (city) {
+    queryString += " AND city LIKE ?";
+    values.push(`%${city}%`);
+  }
+
+  if (age) {
+    queryString += " AND age LIKE ?";
+    values.push(`%${age}%`);
+  }
+
+  if (gender) {
+    queryString += " AND gender LIKE ?";
+    values.push(`%${gender}%`);
+  }
+
+  try {
+    const client = await pool.getConnection();
+    const result = await client.query(queryString, values);
+    return result[0];
+  } catch (err) {
+    console.log("Failed to get users");
+    throw err;
+  }
+};
+
+module.exports = {
+  findAll,
+  findById,
+  create,
+  update,
+  deleteById,
+  search,
+};
