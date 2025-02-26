@@ -1,4 +1,4 @@
-const { pool, connectToDatabase } = require("../db/connect");
+const { pool } = require("../db/connect");
 
 const findAll = async () => {
   const queryString = "SELECT * FROM Users";
